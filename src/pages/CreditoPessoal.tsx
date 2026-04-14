@@ -8,6 +8,7 @@ const CreditoPessoal = () => (
   <div className="min-h-screen bg-background font-body">
     <Navbar />
     <ServicePageTemplate
+      variant="personal"
       badge="Crédito Pessoal"
       title="Dinheiro na conta para"
       titleHighlight="realizar seus sonhos"
@@ -16,7 +17,7 @@ const CreditoPessoal = () => (
       stats={[
         { value: "R$ 1.000", label: "Valor Mínimo" },
         { value: "R$ 100.000", label: "Valor Máximo" },
-        { value: "1.29%", label: "Taxa a partir de" },
+        { value: "1,29%", label: "Taxa a partir de" },
         { value: "60 meses", label: "Prazo Máximo" },
       ]}
       benefits={[

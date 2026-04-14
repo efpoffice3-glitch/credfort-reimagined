@@ -1,9 +1,33 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useSpring, useMotionValue, animate } from "framer-motion";
 import { MessageCircle, Lock, CheckCircle } from "lucide-react";
 import SectionHeading from "./SectionHeading";
+import AnimatedBackground from "./AnimatedBackground";
 
 const WHATSAPP_URL = "https://wa.me/5541956766654?text=Olá!%20Fiz%20uma%20simulação%20e%20gostaria%20de%20garantir%20minha%20taxa%20especial!";
+
+const AnimatedNumber = ({ value }: { value: number }) => {
+  const motionVal = useMotionValue(0);
+  const springVal = useSpring(motionVal, { stiffness: 80, damping: 25 });
+  const [display, setDisplay] = useState("0,00");
+
+  useEffect(() => {
+    const controls = animate(motionVal, value, {
+      duration: 0.6,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    });
+    return controls.stop;
+  }, [value, motionVal]);
+
+  useEffect(() => {
+    const unsub = springVal.on("change", (v) => {
+      setDisplay(v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+    });
+    return unsub;
+  }, [springVal]);
+
+  return <span>{display}</span>;
+};
 
 const SimulatorSection = () => {
   const [valor, setValor] = useState(50000);
@@ -13,8 +37,10 @@ const SimulatorSection = () => {
   const parcela = valor * (taxaDecimal * Math.pow(1 + taxaDecimal, prazo)) / (Math.pow(1 + taxaDecimal, prazo) - 1);
 
   return (
-    <section id="simulador" className="section-padding bg-card/50 relative">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="simulador" className="section-padding bg-card/50 relative overflow-hidden">
+      <AnimatedBackground variant="mesh" />
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <SectionHeading
           badge="Simulador Inteligente"
           title="Simule agora e descubra"
@@ -23,27 +49,42 @@ const SimulatorSection = () => {
         />
 
         <div className="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
             <div className="flex flex-col gap-4">
               {[
                 "Taxas a partir de 1.29% ao mês",
                 "Sem consulta inicial ao SPC/Serasa",
                 "Aprovação em menos de 5 minutos",
                 "Dinheiro na conta em até 24 horas",
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                  <span className="text-muted-foreground">{item}</span>
-                </div>
+              ].map((item, i) => (
+                <motion.div
+                  key={item}
+                  initial={{ opacity: 0, x: -30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.5 }}
+                  className="flex items-center gap-3 group"
+                >
+                  <motion.div whileHover={{ scale: 1.2, rotate: 10 }} transition={{ type: "spring" }}>
+                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                  </motion.div>
+                  <span className="text-muted-foreground group-hover:text-foreground transition-colors">{item}</span>
+                </motion.div>
               ))}
             </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: 50, filter: "blur(10px)" }}
+            whileInView={{ opacity: 1, x: 0, filter: "blur(0px)" }}
             viewport={{ once: true }}
-            className="glass-card rounded-2xl p-8 glow-gold-sm"
+            transition={{ duration: 0.8 }}
+            className="glass-card rounded-2xl p-8 glow-gold-sm gradient-border relative overflow-hidden"
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-heading font-bold text-xl text-foreground">Simule seu Crédito</h3>
@@ -52,9 +93,17 @@ const SimulatorSection = () => {
 
             <div className="space-y-6">
               <div>
-                <div className="flex justify-between text-sm mb-2">
+                <div className="flex justify-between text-sm mb-3">
                   <span className="text-muted-foreground">Valor do Crédito</span>
-                  <span className="font-heading font-bold text-foreground">R$ {valor.toLocaleString("pt-BR")}</span>
+                  <motion.span
+                    className="font-heading font-bold text-foreground"
+                    key={valor}
+                    initial={{ scale: 1.1 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    R$ {valor.toLocaleString("pt-BR")}
+                  </motion.span>
                 </div>
                 <input
                   type="range"
@@ -63,8 +112,7 @@ const SimulatorSection = () => {
                   step={1000}
                   value={valor}
                   onChange={(e) => setValor(Number(e.target.value))}
-                  className="w-full h-2 bg-secondary rounded-full appearance-none cursor-pointer accent-primary"
-                  style={{ accentColor: "hsl(var(--primary))" }}
+                  className="w-full h-2 bg-secondary rounded-full appearance-none cursor-pointer slider-gold"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>R$ 5.000</span>
@@ -73,9 +121,17 @@ const SimulatorSection = () => {
               </div>
 
               <div>
-                <div className="flex justify-between text-sm mb-2">
+                <div className="flex justify-between text-sm mb-3">
                   <span className="text-muted-foreground">Prazo de Pagamento</span>
-                  <span className="font-heading font-bold text-foreground">{prazo} meses</span>
+                  <motion.span
+                    className="font-heading font-bold text-foreground"
+                    key={prazo}
+                    initial={{ scale: 1.1 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    {prazo} meses
+                  </motion.span>
                 </div>
                 <input
                   type="range"
@@ -84,8 +140,7 @@ const SimulatorSection = () => {
                   step={6}
                   value={prazo}
                   onChange={(e) => setPrazo(Number(e.target.value))}
-                  className="w-full h-2 bg-secondary rounded-full appearance-none cursor-pointer"
-                  style={{ accentColor: "hsl(var(--primary))" }}
+                  className="w-full h-2 bg-secondary rounded-full appearance-none cursor-pointer slider-gold"
                 />
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>12 meses</span>
@@ -93,28 +148,33 @@ const SimulatorSection = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-secondary/50">
+              <motion.div
+                className="grid grid-cols-2 gap-4 p-4 rounded-xl bg-secondary/50"
+                layout
+              >
                 <div>
                   <div className="text-xs text-muted-foreground">Parcela Estimada</div>
                   <div className="font-heading text-2xl font-bold text-gradient-gold">
-                    R$ {parcela.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    R$ <AnimatedNumber value={parcela} />
                   </div>
                 </div>
                 <div>
                   <div className="text-xs text-muted-foreground">Taxa Mensal</div>
                   <div className="font-heading text-2xl font-bold text-foreground">A partir de {taxa}%</div>
                 </div>
-              </div>
+              </motion.div>
 
-              <a
+              <motion.a
                 href={WHATSAPP_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full py-4 rounded-xl bg-gradient-gold font-heading font-bold text-primary-foreground hover:scale-[1.02] transition-transform"
+                className="flex items-center justify-center gap-3 w-full py-4 rounded-xl bg-gradient-gold font-heading font-bold text-primary-foreground transition-all duration-300"
+                whileHover={{ scale: 1.03, boxShadow: "0 0 40px -5px hsl(var(--gold) / 0.5)" }}
+                whileTap={{ scale: 0.98 }}
               >
                 <MessageCircle className="w-5 h-5" />
                 GARANTIR MINHA TAXA ESPECIAL
-              </a>
+              </motion.a>
 
               <p className="text-xs text-center text-muted-foreground">
                 *Sujeito a análise de crédito. Processamento 100% criptografado.

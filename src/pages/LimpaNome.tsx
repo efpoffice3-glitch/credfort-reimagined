@@ -8,6 +8,7 @@ const LimpaNome = () => (
   <div className="min-h-screen bg-background font-body">
     <Navbar />
     <ServicePageTemplate
+      variant="limpanome"
       badge="Limpa Nome"
       title="Saia do vermelho e"
       titleHighlight="recupere seu crédito"

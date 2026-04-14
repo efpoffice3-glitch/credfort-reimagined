@@ -8,6 +8,7 @@ const CreditoGarantia = () => (
   <div className="min-h-screen bg-background font-body">
     <Navbar />
     <ServicePageTemplate
+      variant="garantia"
       badge="Crédito com Garantia"
       title="Taxas até 5x menores usando"
       titleHighlight="seu imóvel ou veículo"
@@ -16,7 +17,7 @@ const CreditoGarantia = () => (
       stats={[
         { value: "R$ 30.000", label: "Valor Mínimo" },
         { value: "R$ 3.000.000", label: "Valor Máximo" },
-        { value: "0.89%", label: "Taxa a partir de" },
+        { value: "0,89%", label: "Taxa a partir de" },
         { value: "240 meses", label: "Prazo Máximo" },
       ]}
       benefits={[

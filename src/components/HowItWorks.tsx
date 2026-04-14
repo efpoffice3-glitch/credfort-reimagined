@@ -1,6 +1,8 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import { MessageCircle, Phone, FileCheck, Zap, Banknote } from "lucide-react";
 import SectionHeading from "./SectionHeading";
+import { getStaggerProps } from "@/hooks/useScrollAnimation";
 
 const steps = [
   { num: "01", icon: Phone, title: "Entre em Contato", desc: "Fale conosco pelo WhatsApp ou preencha o simulador. É rápido e sem compromisso.", time: "30 segundos" },
@@ -11,54 +13,87 @@ const steps = [
 
 const WHATSAPP_URL = "https://wa.me/5541956766654?text=Olá!%20Quero%20iniciar%20minha%20simulação!";
 
-const HowItWorks = () => (
-  <section className="section-padding bg-background relative">
-    <div className="container mx-auto px-4 lg:px-8">
-      <SectionHeading badge="Processo Simples" title="Como" highlight="Funciona?" description="Do primeiro contato ao dinheiro na conta em 4 passos simples. Sem burocracia, sem complicação." />
+const HowItWorks = () => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start 80%", "end 50%"],
+  });
+  const lineWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {steps.map((step, i) => (
+  return (
+    <section ref={containerRef} className="section-padding bg-background relative overflow-hidden">
+      {/* Subtle grid background */}
+      <div className="absolute inset-0 opacity-[0.02]" style={{
+        backgroundImage: "radial-gradient(circle, hsl(var(--gold)) 1px, transparent 1px)",
+        backgroundSize: "50px 50px",
+      }} />
+
+      <div className="container mx-auto px-4 lg:px-8 relative">
+        <SectionHeading badge="Processo Simples" title="Como" highlight="Funciona?" description="Do primeiro contato ao dinheiro na conta em 4 passos simples. Sem burocracia, sem complicação." />
+
+        {/* Animated progress line (desktop) */}
+        <div className="hidden lg:block relative mb-8">
+          <div className="absolute left-[12.5%] right-[12.5%] top-0 h-0.5 bg-border/30 rounded-full" />
           <motion.div
-            key={step.num}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.15 }}
-            className="relative glass-card-hover rounded-2xl p-6 group"
-          >
-            <span className="font-heading text-5xl font-bold text-primary/10 group-hover:text-primary/20 transition-colors">{step.num}</span>
-            <div className="mt-2 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-              <step.icon className="w-6 h-6 text-primary" />
-            </div>
-            <h3 className="mt-4 font-heading font-semibold text-lg text-foreground">{step.title}</h3>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
-            <span className="mt-3 inline-block text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">{step.time}</span>
+            className="absolute left-[12.5%] top-0 h-0.5 bg-gradient-to-r from-primary to-primary/50 rounded-full"
+            style={{ width: lineWidth }}
+          />
+        </div>
 
-            {i < 3 && (
-              <div className="hidden lg:block absolute -right-3 top-1/2 w-6 h-0.5 bg-primary/20" />
-            )}
-          </motion.div>
-        ))}
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {steps.map((step, i) => (
+            <motion.div
+              key={step.num}
+              {...getStaggerProps("blurIn", i, 0.18)}
+              className="relative glass-card-hover rounded-2xl p-6 group perspective-card"
+              whileHover={{
+                rotateY: 5,
+                rotateX: -3,
+                scale: 1.03,
+                transition: { duration: 0.3 },
+              }}
+            >
+              <span className="font-heading text-5xl font-bold text-primary/10 group-hover:text-primary/25 transition-all duration-500">{step.num}</span>
+              <motion.div
+                className="mt-2 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors"
+                whileInView={{ scale: [0, 1.2, 1] }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.18 + 0.3, duration: 0.5, type: "spring" }}
+              >
+                <step.icon className="w-6 h-6 text-primary" />
+              </motion.div>
+              <h3 className="mt-4 font-heading font-semibold text-lg text-foreground">{step.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+              <span className="mt-3 inline-block text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">{step.time}</span>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mt-12 text-center"
-      >
-        <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-gold font-heading font-bold text-primary-foreground hover:scale-105 transition-transform"
+              {i < 3 && (
+                <div className="hidden lg:block absolute -right-3 top-1/2 w-6 h-0.5 bg-primary/20" />
+              )}
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="mt-12 text-center"
         >
-          <MessageCircle className="w-5 h-5" />
-          Iniciar Simulação
-        </a>
-      </motion.div>
-    </div>
-  </section>
-);
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-gold font-heading font-bold text-primary-foreground hover:scale-105 transition-transform hover:shadow-[0_0_40px_-5px_hsl(var(--gold)/0.4)]"
+          >
+            <MessageCircle className="w-5 h-5" />
+            Iniciar Simulação
+          </a>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
 
 export default HowItWorks;
