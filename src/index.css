@@ -44,6 +44,13 @@
     --glass: 222 40% 8%;
     --glass-border: 222 25% 20%;
 
+    /* Service page accent colors */
+    --accent-blue: 220 70% 55%;
+    --accent-green: 160 60% 45%;
+    --accent-purple: 270 60% 55%;
+    --accent-teal: 185 65% 45%;
+    --accent-red: 0 70% 55%;
+
     --sidebar-background: 222 40% 8%;
     --sidebar-foreground: 40 20% 95%;
     --sidebar-primary: 40 65% 55%;
@@ -118,8 +125,102 @@
     background-size: 200% 100%;
   }
 
+  .animate-mesh-gradient {
+    animation: mesh-move 12s ease-in-out infinite alternate;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 6s ease-in-out infinite;
+  }
+
+  .animate-rotate-border {
+    animation: rotate-border 4s linear infinite;
+  }
+
+  .animate-gradient-shift {
+    animation: gradient-shift 8s ease-in-out infinite alternate;
+    background-size: 400% 400%;
+  }
+
   .section-padding {
     @apply py-20 md:py-28 lg:py-32;
+  }
+
+  /* 3D perspective card */
+  .perspective-card {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  /* Gradient border wrapper */
+  .gradient-border {
+    position: relative;
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--border-angle, 0deg), hsl(var(--gold) / 0.1), hsl(var(--gold) / 0.5), hsl(var(--gold) / 0.1));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotate-border 4s linear infinite;
+  }
+
+  /* Shimmer badge */
+  .shimmer-badge {
+    position: relative;
+    overflow: hidden;
+  }
+  .shimmer-badge::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--gold) / 0.15) 50%,
+      transparent 100%
+    );
+    animation: shimmer 3s ease-in-out infinite;
+    background-size: 200% 100%;
+  }
+
+  /* Custom range slider styling */
+  .slider-gold::-webkit-slider-track {
+    @apply h-2 rounded-full;
+    background: linear-gradient(to right, hsl(var(--gold)), hsl(var(--gold-dark)));
+  }
+  .slider-gold::-webkit-slider-thumb {
+    @apply w-5 h-5 rounded-full border-2 cursor-pointer;
+    border-color: hsl(var(--gold));
+    background: hsl(var(--background));
+    box-shadow: 0 0 10px hsl(var(--gold) / 0.4);
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: -6px;
+  }
+
+  /* Active FAQ indicator */
+  .faq-active-bar {
+    position: relative;
+  }
+  .faq-active-bar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(to bottom, hsl(var(--gold)), hsl(var(--gold-dark)));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .faq-active-bar.active::before {
+    opacity: 1;
   }
 }
 
@@ -136,4 +237,32 @@
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+@keyframes mesh-move {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(3deg); }
+  100% { transform: scale(1) rotate(-2deg); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.15; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(1.1); }
+}
+
+@keyframes rotate-border {
+  0% { --border-angle: 0deg; }
+  100% { --border-angle: 360deg; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@property --border-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
 }
