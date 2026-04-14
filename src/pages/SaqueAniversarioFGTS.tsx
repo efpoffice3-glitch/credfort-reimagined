@@ -8,6 +8,7 @@ const SaqueAniversarioFGTS = () => (
   <div className="min-h-screen bg-background font-body">
     <Navbar />
     <ServicePageTemplate
+      variant="fgts"
       badge="Antecipação FGTS"
       title="Antecipe até 12 anos do seu"
       titleHighlight="saque-aniversário FGTS"
@@ -16,7 +17,7 @@ const SaqueAniversarioFGTS = () => (
       stats={[
         { value: "R$ 300", label: "Valor Mínimo" },
         { value: "R$ 50.000", label: "Valor Máximo" },
-        { value: "1.49%", label: "Taxa a partir de" },
+        { value: "1,49%", label: "Taxa a partir de" },
         { value: "12 anos", label: "Prazo Máximo" },
       ]}
       benefits={[

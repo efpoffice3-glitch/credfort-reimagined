@@ -8,6 +8,7 @@ const CreditoConsignado = () => (
   <div className="min-h-screen bg-background font-body">
     <Navbar />
     <ServicePageTemplate
+      variant="consignado"
       badge="Crédito Consignado"
       title="As menores taxas para"
       titleHighlight="aposentados e servidores"
@@ -16,7 +17,7 @@ const CreditoConsignado = () => (
       stats={[
         { value: "R$ 500", label: "Valor Mínimo" },
         { value: "R$ 500.000", label: "Valor Máximo" },
-        { value: "1.29%", label: "Taxa a partir de" },
+        { value: "1,29%", label: "Taxa a partir de" },
         { value: "120 meses", label: "Prazo Máximo" },
       ]}
       benefits={[
