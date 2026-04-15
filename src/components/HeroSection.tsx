@@ -8,9 +8,6 @@ import heroImg from "@/assets/hero-home.jpg";
 
 const WHATSAPP_URL = "https://wa.me/5541956766654?text=Olá!%20Quero%20solicitar%20crédito%20agora!";
 
-const words = ["O crédito que você precisa,"];
-const highlight = "na velocidade que você merece.";
-
 const HeroSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -31,21 +28,27 @@ const HeroSection = () => {
 
   return (
     <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden pt-20">
-      {/* Parallax background image */}
+      {/* Parallax background image — more visible */}
       <motion.div className="absolute inset-0 will-change-transform" style={{ y: imgY, scale: imgScale }}>
-        <img src={heroImg} alt="Família CredFort" className="w-full h-full object-cover opacity-25" width={1920} height={1080} />
+        <img
+          src={heroImg}
+          alt="Família realizada com crédito CredFort"
+          className="w-full h-full object-cover opacity-40"
+          width={1920}
+          height={1080}
+        />
       </motion.div>
 
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/50" />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+      {/* Gradient overlays — softer to let image breathe */}
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30" />
 
       {/* Animated orbs */}
       <AnimatedBackground variant="orbs" />
 
       {/* Content with parallax */}
       <motion.div
-        className="container mx-auto px-4 lg:px-8 relative z-10 will-change-transform"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 will-change-transform"
         style={{ y: contentY, opacity: contentOpacity }}
       >
         <div className="max-w-3xl">
@@ -68,31 +71,27 @@ const HeroSection = () => {
             Correspondente Bancário Autorizado
           </motion.span>
 
-          {/* H1 with staggered word reveal */}
-          <h1 className="mt-6 font-heading text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-foreground">
-            {words.map((word, wi) => (
-              <span key={wi} className="inline">
-                {word.split(" ").map((w, i) => (
-                  <motion.span
-                    key={`${wi}-${i}`}
-                    initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    transition={{ delay: 0.4 + i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="inline-block mr-[0.3em]"
-                  >
-                    {w}
-                  </motion.span>
-                ))}
-              </span>
+          {/* H1 — Copywrite com psicologia de vendas */}
+          <h1 className="mt-6 font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] text-foreground">
+            {"Realize seus sonhos".split(" ").map((w, i) => (
+              <motion.span
+                key={`w-${i}`}
+                initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.4 + i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                className="inline-block mr-[0.3em]"
+              >
+                {w}
+              </motion.span>
             ))}
             <br />
             <span className="text-gradient-gold italic">
-              {highlight.split(" ").map((w, i) => (
+              {"com crédito rápido e seguro.".split(" ").map((w, i) => (
                 <motion.span
                   key={`h-${i}`}
                   initial={{ opacity: 0, y: 30, filter: "blur(8px)" }}
                   animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  transition={{ delay: 0.8 + i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  transition={{ delay: 0.7 + i * 0.08, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="inline-block mr-[0.3em]"
                 >
                   {w}
@@ -101,16 +100,16 @@ const HeroSection = () => {
             </span>
           </h1>
 
-          {/* Description */}
+          {/* Description — urgência e benefício claro */}
           <motion.p
             initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ delay: 1.2, duration: 0.6 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
             className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl"
           >
-            Esqueça a burocracia dos bancos tradicionais. Aqui você tem{" "}
-            <strong className="text-foreground">aprovação em minutos</strong> e{" "}
-            <strong className="text-foreground">dinheiro na conta em até 24 horas</strong>.
+            Mais de <strong className="text-foreground">12.000 brasileiros</strong> já conquistaram{" "}
+            <strong className="text-foreground">aprovação em minutos</strong> e receberam o dinheiro{" "}
+            <strong className="text-foreground">em até 24 horas</strong>. É a sua vez.
           </motion.p>
 
           {/* Badge pills */}
@@ -120,7 +119,7 @@ const HeroSection = () => {
                 key={text}
                 initial={{ opacity: 0, scale: 0.8, filter: "blur(4px)" }}
                 animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                transition={{ delay: 1.4 + i * 0.1, type: "spring", stiffness: 200, damping: 20 }}
+                transition={{ delay: 1.3 + i * 0.1, type: "spring", stiffness: 200, damping: 20 }}
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-card text-sm text-muted-foreground"
               >
                 <Icon className="w-4 h-4 text-primary" /> {text}
@@ -132,7 +131,7 @@ const HeroSection = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6, duration: 0.6 }}
+            transition={{ delay: 1.5, duration: 0.6 }}
             className="mt-10 flex flex-col sm:flex-row gap-4"
           >
             <MagneticButton
