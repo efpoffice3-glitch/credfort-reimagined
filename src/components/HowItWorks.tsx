@@ -2,7 +2,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { MessageCircle, Phone, FileCheck, Zap, Banknote } from "lucide-react";
 import SectionHeading from "./SectionHeading";
-import { getStaggerProps } from "@/hooks/useScrollAnimation";
+import GlowCard from "./GlowCard";
+import AnimatedBackground from "./AnimatedBackground";
 
 const steps = [
   { num: "01", icon: Phone, title: "Entre em Contato", desc: "Fale conosco pelo WhatsApp ou preencha o simulador. É rápido e sem compromisso.", time: "30 segundos" },
@@ -23,13 +24,15 @@ const HowItWorks = () => {
 
   return (
     <section ref={containerRef} className="section-padding bg-background relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.02]" style={{
-        backgroundImage: "radial-gradient(circle, hsl(var(--gold)) 1px, transparent 1px)",
-        backgroundSize: "50px 50px",
-      }} />
+      <AnimatedBackground variant="grid" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
-        <SectionHeading badge="Processo Simples" title="Como" highlight="Funciona?" description="Do primeiro contato ao dinheiro na conta em 4 passos simples. Sem burocracia, sem complicação." />
+        <SectionHeading
+          badge="Processo Simples"
+          title="Como"
+          highlight="Funciona?"
+          description="Do primeiro contato ao dinheiro na conta em 4 passos simples."
+        />
 
         {/* Animated progress line (desktop) */}
         <div className="hidden lg:block relative mb-8">
@@ -44,35 +47,31 @@ const HowItWorks = () => {
           {steps.map((step, i) => (
             <motion.div
               key={step.num}
-              {...getStaggerProps("blurIn", i, 0.18)}
-              className="relative glass-card rounded-2xl p-6 group border border-border/50 overflow-hidden transition-all duration-500 hover:border-primary/40 hover:shadow-[0_0_30px_-5px_hsl(var(--gold)/0.15)]"
-              style={{ perspective: "1000px", transformStyle: "preserve-3d" }}
-              whileHover={{
-                rotateY: 5,
-                rotateX: -3,
-                scale: 1.03,
-                transition: { duration: 0.3 },
-              }}
+              initial={{ opacity: 0, y: 40, filter: "blur(8px)" }}
+              whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* Glow on hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/0 group-hover:from-primary/[0.04] group-hover:to-primary/[0.08] transition-all duration-500" />
-
-              <span className="relative font-heading text-5xl font-bold text-primary/10 group-hover:text-primary/30 transition-all duration-500">{step.num}</span>
-              <motion.div
-                className="relative mt-2 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors"
-                whileInView={{ scale: [0, 1.2, 1] }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.18 + 0.3, duration: 0.5, type: "spring" }}
-              >
-                <step.icon className="w-6 h-6 text-primary" />
-              </motion.div>
-              <h3 className="relative mt-4 font-heading font-semibold text-lg text-foreground">{step.title}</h3>
-              <p className="relative mt-2 text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
-              <span className="relative mt-3 inline-block text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">{step.time}</span>
-
-              {i < 3 && (
-                <div className="hidden lg:block absolute -right-3 top-1/2 w-6 h-0.5 bg-primary/20" />
-              )}
+              <GlowCard className="p-6 h-full group">
+                <span className="font-heading text-5xl font-bold text-primary/10 group-hover:text-primary/30 transition-all duration-500">
+                  {step.num}
+                </span>
+                <motion.div
+                  className="mt-2 w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-300"
+                  whileInView={{ scale: [0, 1.2, 1] }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 + 0.3, duration: 0.5, type: "spring" }}
+                >
+                  <step.icon className="w-6 h-6 text-primary" />
+                </motion.div>
+                <h3 className="mt-4 font-heading font-semibold text-lg text-foreground group-hover:text-primary transition-colors duration-300">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+                <span className="mt-3 inline-block text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
+                  {step.time}
+                </span>
+              </GlowCard>
             </motion.div>
           ))}
         </div>
@@ -84,15 +83,17 @@ const HowItWorks = () => {
           transition={{ delay: 0.5 }}
           className="mt-12 text-center"
         >
-          <a
+          <motion.a
             href={WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-gold font-heading font-bold text-primary-foreground hover:scale-105 transition-transform hover:shadow-[0_0_40px_-5px_hsl(var(--gold)/0.4)]"
+            className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-gold font-heading font-bold text-primary-foreground transition-all duration-300"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 50px -5px hsl(var(--gold) / 0.4)" }}
+            whileTap={{ scale: 0.97 }}
           >
             <MessageCircle className="w-5 h-5" />
             Iniciar Simulação
-          </a>
+          </motion.a>
         </motion.div>
       </div>
     </section>
