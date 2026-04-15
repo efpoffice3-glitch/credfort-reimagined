@@ -9,9 +9,11 @@ import FAQSection from "@/components/FAQSection";
 import FinalCTA from "@/components/FinalCTA";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import CustomCursor from "@/components/CustomCursor";
 
 const Index = () => (
   <div className="min-h-screen bg-background font-body">
+    <CustomCursor />
     <Navbar />
     <HeroSection />
     <StatsBar />

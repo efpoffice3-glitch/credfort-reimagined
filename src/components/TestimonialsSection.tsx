@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import useEmblaCarousel from "embla-carousel-react";
@@ -51,7 +51,7 @@ const TestimonialsSection = () => {
 
   return (
     <section className="section-padding bg-card/50 relative overflow-hidden">
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <SectionHeading
           title="O que nossos clientes"
           highlight="dizem"
@@ -59,7 +59,6 @@ const TestimonialsSection = () => {
         />
 
         <div className="relative max-w-5xl mx-auto">
-          {/* Carousel */}
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6">
               {testimonials.map((t, i) => (
@@ -71,15 +70,18 @@ const TestimonialsSection = () => {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                 >
-                  <div className="glass-card-hover rounded-2xl p-8 relative h-full">
-                    <Quote className="w-8 h-8 text-primary/20 absolute top-6 right-6" />
-                    <div className="flex gap-1 mb-4">
+                  <div className="glass-card rounded-2xl p-8 relative h-full border border-border/50 group transition-all duration-500 hover:border-primary/30 hover:shadow-[0_0_25px_-5px_hsl(var(--gold)/0.1)]">
+                    {/* Glow */}
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/0 to-primary/0 group-hover:from-primary/[0.02] group-hover:to-primary/[0.05] transition-all duration-500" />
+                    
+                    <Quote className="relative w-8 h-8 text-primary/20 absolute top-6 right-6 group-hover:text-primary/40 transition-colors duration-300" />
+                    <div className="relative flex gap-1 mb-4">
                       {[...Array(5)].map((_, si) => (
                         <Star key={si} className="w-4 h-4 fill-primary text-primary" />
                       ))}
                     </div>
-                    <p className="text-foreground leading-relaxed mb-6 italic">"{t.text}"</p>
-                    <div className="flex items-center gap-3">
+                    <p className="relative text-foreground leading-relaxed mb-6 italic">"{t.text}"</p>
+                    <div className="relative flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center font-heading font-bold text-primary-foreground text-sm">
                         {t.name[0]}
                       </div>
@@ -94,15 +96,13 @@ const TestimonialsSection = () => {
             </div>
           </div>
 
-          {/* Controls */}
           <div className="flex items-center justify-center gap-4 mt-8">
             <button
               onClick={scrollPrev}
-              className="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:border-primary/40 transition-colors"
+              className="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:border-primary/40 hover:bg-primary/10 transition-all duration-300"
             >
               <ChevronLeft className="w-5 h-5 text-primary" />
             </button>
-
             <div className="flex gap-2">
               {scrollSnaps.map((_, i) => (
                 <button
@@ -116,10 +116,9 @@ const TestimonialsSection = () => {
                 />
               ))}
             </div>
-
             <button
               onClick={scrollNext}
-              className="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:border-primary/40 transition-colors"
+              className="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:border-primary/40 hover:bg-primary/10 transition-all duration-300"
             >
               <ChevronRight className="w-5 h-5 text-primary" />
             </button>
