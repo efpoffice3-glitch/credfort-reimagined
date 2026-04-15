@@ -1,29 +1,26 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { MessageCircle, TrendingUp, ShieldCheck, Clock, CheckCircle, ArrowRight } from "lucide-react";
+import { MessageCircle, TrendingUp, ShieldCheck, Clock, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 import CountdownTimer from "./CountdownTimer";
 import MagneticButton from "./MagneticButton";
+import RotatingWords from "./RotatingWords";
+import ParticleField from "./ParticleField";
 import heroImg from "@/assets/hero-home.jpg";
 
 const WHATSAPP_URL = "https://wa.me/5541956766654?text=Olá!%20Quero%20solicitar%20crédito%20agora!";
-
-const wordReveal = (text: string, baseDelay: number) =>
-  text.split(" ").map((w, i) => (
-    <motion.span
-      key={`${w}-${i}`}
-      initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ delay: baseDelay + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="inline-block mr-[0.3em]"
-    >
-      {w}
-    </motion.span>
-  ));
 
 const badgePills = [
   { icon: ShieldCheck, text: "Sem consulta ao SPC/Serasa" },
   { icon: Clock, text: "Aprovação em minutos" },
   { icon: CheckCircle, text: "100% Seguro" },
+];
+
+const rotatingKeywords = [
+  "crédito rápido",
+  "taxas imbatíveis",
+  "aprovação imediata",
+  "dinheiro na conta",
+  "parcelas que cabem",
 ];
 
 const HeroSection = () => {
@@ -34,20 +31,14 @@ const HeroSection = () => {
   });
 
   const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative min-h-screen flex items-center overflow-hidden"
-    >
-      {/* ── Full-bleed parallax image ── */}
-      <motion.div
-        className="absolute inset-0 will-change-transform"
-        style={{ y: imgY, scale: imgScale }}
-      >
+    <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Parallax background image */}
+      <motion.div className="absolute inset-0 will-change-transform" style={{ y: imgY, scale: imgScale }}>
         <img
           src={heroImg}
           alt="Família brasileira feliz — CredFort"
@@ -57,19 +48,24 @@ const HeroSection = () => {
         />
       </motion.div>
 
-      {/* ── Overlays — let image breathe on the right ── */}
+      {/* Overlays — let image breathe on right */}
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
 
-      {/* ── Accent glow ── */}
-      <div
-        className="absolute top-1/3 left-1/4 w-[600px] h-[600px] rounded-full opacity-[0.08] blur-[120px] pointer-events-none"
+      {/* Floating particles */}
+      <ParticleField count={25} />
+
+      {/* Accent glow */}
+      <motion.div
+        className="absolute top-1/4 left-1/5 w-[700px] h-[700px] rounded-full opacity-[0.07] blur-[140px] pointer-events-none"
         style={{ background: "radial-gradient(circle, hsl(var(--gold)), transparent 70%)" }}
+        animate={{ scale: [1, 1.15, 1], opacity: [0.05, 0.09, 0.05] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* ── Content ── */}
+      {/* Content */}
       <motion.div
-        className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 will-change-transform pt-28 pb-20 lg:pt-32 lg:pb-28"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 will-change-transform pt-28 pb-20 lg:pt-36 lg:pb-28"
         style={{ y: contentY, opacity: contentOpacity }}
       >
         <div className="max-w-2xl xl:max-w-3xl">
@@ -87,21 +83,37 @@ const HeroSection = () => {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.25, duration: 0.5 }}
-            className="shimmer-badge inline-block mt-6 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20"
+            className="shimmer-badge inline-flex items-center gap-2 mt-6 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase bg-primary/10 text-primary border border-primary/20"
           >
+            <Sparkles className="w-3 h-3" />
             Correspondente Bancário Autorizado
           </motion.span>
 
-          {/* H1 */}
+          {/* Animated H1 with rotating words */}
           <h1 className="mt-6 font-heading text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.08] text-foreground">
-            {wordReveal("Realize seus sonhos", 0.35)}
+            {"Transforme sua vida com".split(" ").map((w, i) => (
+              <motion.span
+                key={`w-${i}`}
+                initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ delay: 0.35 + i * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="inline-block mr-[0.3em]"
+              >
+                {w}
+              </motion.span>
+            ))}
             <br />
-            <span className="text-gradient-gold italic">
-              {wordReveal("com crédito rápido e seguro.", 0.6)}
-            </span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="italic"
+            >
+              <RotatingWords words={rotatingKeywords} interval={2800} className="min-w-[280px] sm:min-w-[380px]" />
+            </motion.span>
           </h1>
 
-          {/* Description */}
+          {/* Subheadline with typewriter feel */}
           <motion.p
             initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -147,10 +159,11 @@ const HeroSection = () => {
             </MagneticButton>
             <a
               href="#simulador"
-              className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl border border-border bg-secondary/50 font-heading font-semibold text-base text-foreground hover:bg-secondary hover:border-primary/30 transition-all duration-300"
+              className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl border border-border bg-secondary/50 font-heading font-semibold text-base text-foreground hover:bg-secondary hover:border-primary/30 transition-all duration-300"
             >
               <TrendingUp className="w-5 h-5 text-primary" />
               Simular Parcelas
+              <ArrowRight className="w-4 h-4 text-muted-foreground transition-transform group-hover:translate-x-1" />
             </a>
           </motion.div>
         </div>
